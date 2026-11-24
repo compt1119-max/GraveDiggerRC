@@ -24,10 +24,15 @@ jobs:
         with:
           packages: 'platform-tools platforms;android-34'
           
-      - name: Fix line endings and grant execute permission
+      - name: Build Debug APK
         run: |
-          sed -i 's/\r$//' gradlew
-          chmod +x gradlew
+          if [ -f gradlew ]; then
+            tr -d '\r' < gradlew > gradlew.tmp && mv gradlew.tmp gradlew
+            chmod +x gradlew
+            ./gradlew assembleDebug --stacktrace
+          else
+            gradle assembleDebug --stacktrace
+          fi
           
       - name: Build Debug APK
         run: ./gradlew assembleDebug
